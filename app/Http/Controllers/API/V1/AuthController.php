@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Models\UserSetting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +12,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -24,12 +30,20 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        UserSetting::factory([
+            'user_id' => $user->id
+        ])->create();
+
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
     }
 
-    public function login(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -37,7 +51,7 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['message' => 'Неправильные данные! Либо email либо пароль не соответствуют!'], 401);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
