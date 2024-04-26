@@ -1,53 +1,97 @@
-# REST API with Laravel
 
-This project is a comprehensive guide to building a RESTful API using Laravel. It covers from setup to deployment, focusing on creating a secure and scalable API.
+# User Settings Confirmation System
 
-## Getting Started
+## Описание проекта
 
-### Prerequisites
+Проект представляет собой систему подтверждения изменения настроек пользователя через различные каналы (SMS, Email, Telegram). Система разработана с использованием фреймворка Laravel и Laravel Sail для облегчения развертывания и управления приложениями.
 
-- PHP
-- HTTP server (Apache/Nginx)
-- Database (MySQL/MariaDB)
-- Composer
-- Laravel
+## Техническое задание
 
-### Setup
+Разработка backend-системы для управления настройками пользователя с подтверждением изменений через SMS, Email или Telegram. Пользователи могут выбирать метод подтверждения при попытке изменения настройки. Каждое изменение требует ввода кода, полученного пользователем через выбранный канал.
 
-- For a Docker setup, use Laravel's Docker image for a complete environment.
-- Alternatively, use XAMPP for a quick setup excluding Docker.
 
-### Installation
+### Описание алгоритма
 
-1. Install Laravel via Composer:
-```bash
-composer global require laravel/installer
-```
+Документ с подробным описанием алгоритма "Техническое задание OOO QUICKPAY - Решение от Саидова Сардора Азаматовича.docx" доступен в репозитории. Пожалуйста, смотрите файл для детального понимания логики работы системы.
 
-2. Create a new Laravel project:
-```bash
-laravel new laravel-api
-```
+### Функциональность:
 
-3. Configure your .env file for database connections.
+1. Изменение настройки пользователем.
+2. Отправка кода подтверждения через выбранный метод.
+3. Подтверждение изменения настройки с использованием полученного кода.
 
-### Development
+## Начало работы
 
-- Define data models and set up migrations and seeders.
-- Start with basic GET requests to fetch data.
-- Implement a flexible filter syntax for querying data.
-- Handle POST, PUT, PATCH requests for data manipulation.
-- Use Laravel Sanctum for API token authentication and authorization.
+### Предварительные требования
 
-### Advanced Features
+Для работы с проектом вам понадобятся:
+- Docker
+- Docker Compose
 
-- Bulk insert feature for efficiently adding multiple records.
-- Detailed examples of setting up Laravel Sanctum for secure API requests.
+### Установка и запуск
 
-### Security
+1. **Клонирование репозитория**
 
-Secure your API endpoints using Laravel Sanctum, which provides token-based authentication and authorization capabilities.
+    ```bash
+    git clone https://your-repository-url.git
+    cd your-project-directory
+    ```
 
-### Conclusion
+2. **Запуск с помощью Laravel Sail**
 
-This project walks you through building a REST API with Laravel, highlighting Laravel's powerful features for rapid and secure API development.
+    Laravel Sail — это легкая командная оболочка для взаимодействия с Docker. Перед запуском убедитесь, что у вас установлены Docker и Docker Compose.
+
+    ```bash
+    # Запуск Docker контейнеров
+    ./vendor/bin/sail up
+
+    # Установка зависимостей
+    ./vendor/bin/sail composer install
+
+    # Миграция базы данных
+    ./vendor/bin/sail artisan migrate
+
+    # Заполнение базы данных начальными данными
+    ./vendor/bin/sail artisan db:seed
+    ```
+
+### Использование API
+
+Для тестирования API вы можете использовать Postman или любой другой HTTP клиент.
+
+- **Регистрация пользователя**:
+  POST `/v1/register` 
+  ```json
+  {
+      "name": "Sardor Saidov",
+      "email": "sardor@example.com",
+      "password": "password123"
+  }
+
+
+- **Авторизация пользователя**:
+  POST `/v1/login`
+  ```json
+  {
+      "email": "sardor@example.com",
+      "password": "password123"
+  }
+  ```
+
+- **Изменение настройки**:
+  POST `/v1/settings/change`
+  ```json
+  {
+      "key": "notification",
+      "value": "enabled",
+      "method": "email"
+  }
+  ```
+
+- **Подтверждение изменения настройки**:
+  POST `/v1/settings/confirm`
+  ```json
+  {
+      "code": "123456"
+  }
+  ```
